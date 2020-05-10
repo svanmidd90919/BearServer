@@ -61,6 +61,19 @@ app.get('/items', function(req, res){
     });
 });
 
+app.get('/item/:id', (req, res) => {
+    let ID = req.params.id;
+    Item.findOne({ name : ID}, function( err, item ){
+        if(err){
+            console.log("Get one item error: " + err);
+            res.send(JSON.stringify("Failure"));
+        }
+        else{
+            res.send(JSON.stringify(item));
+        }
+    });
+});
+
 app.post('/item', (req, res) => {
     console.log("Got to POST items. Name: " + req.body.name + " Cost: " + req.body.cost);
     // Create a new model
@@ -91,15 +104,17 @@ app.post('/', (req, res) => {
     });
 });
 
-app.put('/item', (req, res) => {
+app.put('/itemcost', (req, res) => {
     let updateID = req.body.name;
+    console.log("Got to PUT item");
     Item.updateOne({name : updateID}, {cost : req.body.cost}, function(error){
         if(error){
             if(error){
-                res.json({ Error : 'Could not find and update item'});
+                res.status(200);
+                //res.send({ Error : 'Could not find and update item'});
             }
             else{
-                res.json( {Sucess: "Item found and updated"});
+                res.send( {Sucess: "Item found and updated"});
             }
         }
     });
